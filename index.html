@@ -64,10 +64,61 @@ h2 {
 }
 
 .feature {
-  padding: 12px;
+  display: block;
+  width: 100%;
+  padding: 15px;
   background: #263449;
+  color: white;
+  border: 1px solid #34445c;
   border-radius: 10px;
   margin-top: 10px;
+  text-align: left;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.feature:active {
+  background: #36e0b0;
+  color: #101827;
+}
+
+#aiPanel {
+  display: none;
+  margin-top: 20px;
+  padding: 20px;
+  background: #263449;
+  border-radius: 12px;
+}
+
+#aiPanel h3 {
+  color: #36e0b0;
+}
+
+.ai-input {
+  width: 100%;
+  padding: 13px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: none;
+  font-size: 15px;
+}
+
+.ai-button {
+  background: #36e0b0;
+  color: #101827;
+  border: none;
+  padding: 13px 20px;
+  margin-top: 12px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#aiResult {
+  margin-top: 15px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 footer {
@@ -109,12 +160,34 @@ footer a {
   <div class="card">
     <h2>AI Features</h2>
 
-    <div class="feature">📊 TikTok Video Analytics</div>
-    <div class="feature">🔥 Viral Hashtag Suggestions</div>
-    <div class="feature">✍️ AI Caption Generator</div>
-    <div class="feature">🎯 Video Hook Generator</div>
-    <div class="feature">⏰ Best Posting Time</div>
-    <div class="feature">📈 Organic Growth Recommendations</div>
+    <button class="feature" onclick="openAI('analytics')">📊 TikTok Video Analytics</button>
+    <button class="feature" onclick="openAI('hashtag')">🔥 Viral Hashtag Suggestions</button>
+    <button class="feature" onclick="openAI('caption')">✍️ AI Caption Generator</button>
+    <button class="feature" onclick="openAI('hook')">🎯 Video Hook Generator</button>
+    <button class="feature" onclick="openAI('time')">⏰ Best Posting Time</button>
+    <button class="feature" onclick="openAI('growth')">📈 Organic Growth Recommendations</button>
+
+    <div id="aiPanel">
+      <h3 id="aiTitle">AI Feature</h3>
+      <p id="aiDescription"></p>
+
+      <input
+        class="ai-input"
+        id="aiInput"
+        type="text"
+        placeholder="Describe your TikTok content..."
+      >
+
+      <button class="ai-button" onclick="generateAI()">
+        Generate
+      </button>
+
+      <button class="ai-button" onclick="closeAI()">
+        Close
+      </button>
+
+      <div id="aiResult"></div>
+    </div>
   </div>
 
   <div class="card">
@@ -133,6 +206,127 @@ footer a {
   <p>© 2026 ViewBoost AI</p>
   <p>Organic growth. Real audiences.</p>
 </footer>
+
+<script>
+let currentFeature = "";
+
+const features = {
+  analytics: {
+    title: "📊 TikTok Video Analytics",
+    description: "Enter your video topic to get a basic analysis checklist."
+  },
+  hashtag: {
+    title: "🔥 Hashtag Suggestions",
+    description: "Enter your video topic to get relevant hashtag ideas."
+  },
+  caption: {
+    title: "✍️ AI Caption Generator",
+    description: "Enter your video topic to create a caption."
+  },
+  hook: {
+    title: "🎯 Video Hook Generator",
+    description: "Enter your video topic to create opening hooks."
+  },
+  time: {
+    title: "⏰ Best Posting Time",
+    description: "Enter your audience location to get general posting advice."
+  },
+  growth: {
+    title: "📈 Growth Recommendations",
+    description: "Enter your niche to get organic growth tips."
+  }
+};
+
+function openAI(type) {
+  currentFeature = type;
+
+  document.getElementById("aiTitle").textContent =
+    features[type].title;
+
+  document.getElementById("aiDescription").textContent =
+    features[type].description;
+
+  document.getElementById("aiResult").textContent = "";
+  document.getElementById("aiInput").value = "";
+
+  document.getElementById("aiPanel").style.display = "block";
+
+  document.getElementById("aiPanel").scrollIntoView({
+    behavior: "smooth",
+    block: "nearest"
+  });
+}
+
+function closeAI() {
+  document.getElementById("aiPanel").style.display = "none";
+}
+
+function generateAI() {
+  const input = document.getElementById("aiInput").value.trim();
+  const result = document.getElementById("aiResult");
+
+  if (!input) {
+    result.textContent = "Please enter your TikTok content first.";
+    return;
+  }
+
+  const topic = input;
+
+  const suggestions = {
+    analytics:
+      "VIDEO ANALYSIS CHECKLIST\n\n" +
+      "Topic: " + topic +
+      "\n\n1. Check your video views.\n" +
+      "2. Review average watch time.\n" +
+      "3. Check completion rate.\n" +
+      "4. Review likes, comments and shares.\n" +
+      "5. Compare performance with previous videos.",
+
+    hashtag:
+      "HASHTAG IDEAS\n\n" +
+      "#" + topic.replace(/\s+/g, "") +
+      "\n#fyp #foryou #tiktokcreator #viralvideo #contentcreator\n\n" +
+      "Choose hashtags relevant to your actual video.",
+
+    caption:
+      "CAPTION IDEA\n\n" +
+      "🔥 You don't want to miss this!\n" +
+      topic + " — what do you think? 👀\n\n" +
+      "Follow for more!\n\n#fyp #tiktok",
+
+    hook:
+      "VIDEO HOOK IDEAS\n\n" +
+      "1. Wait! You need to see this!\n" +
+      "2. Nobody talks about " + topic + "!\n" +
+      "3. Here's something you should know!\n" +
+      "4. Watch until the end!\n" +
+      "5. You won't believe this!",
+
+    time:
+      "POSTING TIME ADVICE\n\n" +
+      "Topic / Audience: " + topic +
+      "\n\nTry testing different posting times:\n" +
+      "• Morning: 7 AM – 9 AM\n" +
+      "• Afternoon: 12 PM – 2 PM\n" +
+      "• Evening: 7 PM – 10 PM\n\n" +
+      "These are test windows, not guaranteed best times. " +
+      "Use your TikTok analytics to identify your audience's active hours.",
+
+    growth:
+      "ORGANIC GROWTH TIPS\n\n" +
+      "Niche: " + topic +
+      "\n\n1. Post consistently.\n" +
+      "2. Create a strong opening hook.\n" +
+      "3. Make engaging videos.\n" +
+      "4. Reply to comments.\n" +
+      "5. Study your video analytics.\n" +
+      "6. Improve content based on audience response."
+  };
+
+  result.textContent = suggestions[currentFeature] ||
+    "Feature unavailable.";
+}
+</script>
 
 </body>
 </html>
